@@ -122,7 +122,7 @@ export const pokemonApiSlice = basePokemonApi.injectEndpoints({
     }),
     getPokemonList: builder.infiniteQuery<PokemonPage, void, string>({
       infiniteQueryOptions: {
-        initialPageParam: '/pokemon?limit=20&offset=0',
+        initialPageParam: '/pokemon?limit=40&offset=0',
         getNextPageParam: (lastPage) => lastPage.next ?? undefined,
       },
       async queryFn({ pageParam }, _api, _extraOptions, queryBase) {
