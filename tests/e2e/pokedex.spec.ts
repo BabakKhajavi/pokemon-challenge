@@ -115,6 +115,29 @@ test('shows loaded saved Pokémon when another detail request fails', async ({ p
   await expect(page.getByRole('alert').filter({ hasText: 'Could not load 1 saved Pokémon.' })).toBeVisible();
 });
 
+test('uses a local placeholder when Pokémon artwork is unavailable', async ({ page }) => {
+  await page.route(/\/api\/v2\/pokemon\?/, (route) => route.fulfill({ json: {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [{ name: 'missingno', url: 'https://pokeapi.co/api/v2/pokemon/10264/' }],
+  } }));
+  await page.route(/\/api\/v2\/pokemon\/10264\/?$/, (route) => route.fulfill({ json: {
+    ...responseFor(1),
+    id: 10264,
+    name: 'missingno',
+  } }));
+
+  await page.goto('/');
+  const artwork = page.getByRole('img', { name: 'Artwork unavailable for missingno' });
+  await expect(artwork).toBeVisible();
+  await expect(artwork).toHaveAttribute('src', '/assets/pokemon-artwork-unavailable.svg');
+  await expect(artwork).not.toHaveAttribute('srcset');
+
+  await page.getByRole('button', { name: 'View details for missingno' }).click();
+  await expect(page.getByRole('dialog').getByRole('img', { name: 'Artwork unavailable for missingno' })).toBeVisible();
+});
+
 test('modal tabs work and reopening uses the cached detail', async ({ page }) => {
   let bulbasaurRequests = 0;
   page.on('request', (request) => {

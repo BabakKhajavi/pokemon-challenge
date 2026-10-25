@@ -2,7 +2,7 @@ import { skipToken } from '@reduxjs/toolkit/query';
 import { publicAsset } from '../../../utils/publicAsset';
 import { useGetEvolutionChainQuery } from '../api/pokemonApiSlice';
 import type { PokemonDetail, PokemonSpecies } from '../types';
-import { getPokemonArtwork } from '../utils/getPokemonArtwork';
+import { getPokemonArtwork, pokemonArtworkFallback } from '../utils/getPokemonArtwork';
 import styles from './PokemonDetailPanels.module.css';
 
 const bookIcon = publicAsset('assets/book-blue-20.png');
@@ -72,9 +72,7 @@ export const PokemonAbout = ({ pokemon, species }: PokemonAboutProps) => {
                     </span>
                   )}
                   <div className={styles.evolutionPokemon}>
-                    {getPokemonArtwork(stage.id) && (
-                      <img src={getPokemonArtwork(stage.id) ?? undefined} alt="" loading="lazy" />
-                    )}
+                    <img src={getPokemonArtwork(stage.id) ?? pokemonArtworkFallback} alt="" loading="lazy" />
                     <span>{stage.name.replaceAll('-', ' ')}</span>
                   </div>
                 </div>

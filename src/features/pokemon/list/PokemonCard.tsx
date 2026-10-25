@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from './PokemonCard.module.css';
 import { FavoriteButton } from '../components/FavoriteButton';
 import { getReadableTextColor } from '../utils/getReadableTextColor';
-import { getPokemonArtwork } from '../utils/getPokemonArtwork';
+import { getPokemonArtwork, pokemonArtworkFallback } from '../utils/getPokemonArtwork';
 
 interface PokemonCardProps {
   pokemonId: number;
@@ -22,12 +22,12 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
     { label: 'grass', background: '#78C850' },
     { label: 'poison', background: '#A040A0' },
   ],
-  imageSrc = './bulbasaur.png',
+  imageSrc = null,
   prioritizeImage = false,
   onSelect,
 }) => {
   const [isHeartHovered, setIsHeartHovered] = useState(false);
-  const responsiveSrcSet = imageSrc === getPokemonArtwork(pokemonId)
+  const responsiveSrcSet = imageSrc && imageSrc === getPokemonArtwork(pokemonId)
     ? `${getPokemonArtwork(pokemonId, 160)} 160w, ${getPokemonArtwork(pokemonId, 256)} 256w, ${imageSrc} 360w`
     : undefined;
 
@@ -50,17 +50,15 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
       </div>
 
       <div className={styles.imageContainer}>
-        {imageSrc && (
-          <img
-            className={styles.bulbasaurImage}
-            src={imageSrc}
-            srcSet={responsiveSrcSet}
-            sizes="(max-width: 420px) 83px, (max-width: 700px) 100px, 144px"
-            alt={name}
-            loading={prioritizeImage ? 'eager' : 'lazy'}
-            fetchPriority={prioritizeImage ? 'high' : 'auto'}
-          />
-        )}
+        <img
+          className={styles.bulbasaurImage}
+          src={imageSrc ?? pokemonArtworkFallback}
+          srcSet={responsiveSrcSet ?? undefined}
+          sizes="(max-width: 420px) 83px, (max-width: 700px) 100px, 144px"
+          alt={imageSrc ? name : `Artwork unavailable for ${name}`}
+          loading={prioritizeImage ? 'eager' : 'lazy'}
+          fetchPriority={prioritizeImage ? 'high' : 'auto'}
+        />
       </div>
 
       <div className={styles.typeSection}>

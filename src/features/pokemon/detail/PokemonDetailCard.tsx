@@ -3,6 +3,7 @@ import type { PokemonDetail } from '../types';
 import styles from './PokemonDetailCard.module.css';
 import { FavoriteButton } from '../components/FavoriteButton';
 import { getReadableTextColor } from '../utils/getReadableTextColor';
+import { pokemonArtworkFallback } from '../utils/getPokemonArtwork';
 
 const abilitiesIcon = publicAsset('assets/abilities-yellow-16.png');
 const heightIcon = publicAsset('assets/height-blue-16.png');
@@ -23,7 +24,10 @@ export const PokemonDetailCard = ({ pokemon }: PokemonDetailCardProps) => {
   return (
     <section className={styles.card} aria-label={`${pokemon.name} summary`}>
       <div className={styles.artwork}>
-        {pokemon.imageSrc && <img src={pokemon.imageSrc} alt={pokemon.name} />}
+        <img
+          src={pokemon.imageSrc ?? pokemonArtworkFallback}
+          alt={pokemon.imageSrc ? pokemon.name : `Artwork unavailable for ${pokemon.name}`}
+        />
       </div>
       <div className={styles.details}>
         <div className={styles.numberRow}>
