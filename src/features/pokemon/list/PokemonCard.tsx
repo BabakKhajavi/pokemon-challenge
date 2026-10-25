@@ -6,23 +6,20 @@ import { getPokemonArtwork, pokemonArtworkFallback } from '../utils/getPokemonAr
 
 interface PokemonCardProps {
   pokemonId: number;
-  name?: string;
-  number?: string;
-  types?: { label: string; background: string }[];
-  imageSrc?: string | null;
+  name: string;
+  number: string;
+  types: { label: string; background: string }[];
+  imageSrc: string | null;
   prioritizeImage?: boolean;
   onSelect: () => void;
 }
 
 export const PokemonCard: React.FC<PokemonCardProps> = ({
   pokemonId,
-  name = 'Bulbasaur',
-  number = '#001',
-  types = [
-    { label: 'grass', background: '#78C850' },
-    { label: 'poison', background: '#A040A0' },
-  ],
-  imageSrc = null,
+  name,
+  number,
+  types,
+  imageSrc,
   prioritizeImage = false,
   onSelect,
 }) => {
@@ -53,19 +50,26 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
         <img
           className={styles.bulbasaurImage}
           src={imageSrc ?? pokemonArtworkFallback}
-          srcSet={responsiveSrcSet ?? undefined}
+          srcSet={responsiveSrcSet}
           sizes="(max-width: 420px) 83px, (max-width: 700px) 100px, 144px"
           alt={imageSrc ? name : `Artwork unavailable for ${name}`}
           loading={prioritizeImage ? 'eager' : 'lazy'}
           fetchPriority={prioritizeImage ? 'high' : 'auto'}
+          onError={(event) => {
+            const image = event.currentTarget;
+            if (image.src.endsWith(pokemonArtworkFallback)) return;
+            image.removeAttribute('srcset');
+            image.src = pokemonArtworkFallback;
+            image.alt = `Artwork unavailable for ${name}`;
+          }}
         />
       </div>
 
       <div className={styles.typeSection}>
         <div className={styles.typesList}>
-          {types.map((t, index) => (
+          {types.map((t) => (
             <div
-              key={index}
+              key={t.label}
               className={styles.typeBadge}
               style={{ backgroundColor: t.background }}
             >

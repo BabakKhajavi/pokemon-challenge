@@ -3,9 +3,9 @@ import { PokemonContainer } from "./features/pokemon/PokemonContainer";
 
 const App = () => {
   return (
-    <main className="app">
+    <div className="app">
       <PokemonContainer />
-    </main>
+    </div>
   );
 };
 

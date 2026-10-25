@@ -27,6 +27,12 @@ export const PokemonDetailCard = ({ pokemon }: PokemonDetailCardProps) => {
         <img
           src={pokemon.imageSrc ?? pokemonArtworkFallback}
           alt={pokemon.imageSrc ? pokemon.name : `Artwork unavailable for ${pokemon.name}`}
+          onError={(event) => {
+            const image = event.currentTarget;
+            if (image.src.endsWith(pokemonArtworkFallback)) return;
+            image.src = pokemonArtworkFallback;
+            image.alt = `Artwork unavailable for ${pokemon.name}`;
+          }}
         />
       </div>
       <div className={styles.details}>

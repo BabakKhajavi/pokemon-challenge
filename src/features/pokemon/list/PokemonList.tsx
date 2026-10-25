@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { ContainedButton } from '../../../components';
+import { ContainedButton } from '../../../components/ContainedButton/ContainedButton';
 import { PokemonCard } from './PokemonCard';
 import styles from './PokemonList.module.css';
 import { pokemonApiSlice, useGetPokemonDetailsByIdsQuery, useGetPokemonListInfiniteQuery } from '../api/pokemonApiSlice';
@@ -9,11 +9,35 @@ import { selectPokemon } from '../pokemonSlice';
 import type { PokemonListItem } from '../types';
 import type { AppDispatch, RootState } from '../../../store';
 
+interface PokemonListCardProps {
+  pokemon: PokemonListItem;
+  prioritizeImage: boolean;
+  onSelect: (pokemon: PokemonListItem) => void;
+}
+
+const PokemonListCard = memo(function PokemonListCard({ pokemon, prioritizeImage, onSelect }: PokemonListCardProps) {
+  const handleSelect = useCallback(() => onSelect(pokemon), [onSelect, pokemon]);
+
+  return (
+    <article className={styles.cardWrapper}>
+      <PokemonCard
+        pokemonId={pokemon.id}
+        name={pokemon.name}
+        number={pokemon.number}
+        types={pokemon.types}
+        imageSrc={pokemon.imageSrc}
+        prioritizeImage={prioritizeImage}
+        onSelect={handleSelect}
+      />
+    </article>
+  );
+});
+
 export const PokemonList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const handleSelectPokemon = (pokemon: PokemonListItem) => {
-    dispatch(selectPokemon(pokemon));
-  };
+  const { favoriteIds, favoritesOnly } = useFavorites();
+  const selectedTypes = useSelector((state: RootState) => state.pokemon.selectedTypes);
+
   const {
     data,
     isLoading: isListLoading,
@@ -22,6 +46,9 @@ export const PokemonList: React.FC = () => {
     hasNextPage,
     fetchNextPage,
   } = useGetPokemonListInfiniteQuery();
+  const { currentData: pokemonByIds, isLoading: isFavoritesLoading, isError: isFavoritesError } =
+    useGetPokemonDetailsByIdsQuery(favoriteIds, { skip: !favoritesOnly || favoriteIds.length === 0 });
+
   const pokemonList = useMemo(
     () => data?.pages.flatMap((page) => page.results) ?? [],
     [data],
@@ -34,19 +61,8 @@ export const PokemonList: React.FC = () => {
     (state: RootState) => detailSelectors.map((selectDetail) => selectDetail(state)),
     shallowEqual,
   );
-
-  useEffect(() => {
-    pokemonList.forEach((pokemon) => {
-      void dispatch(pokemonApiSlice.endpoints.getPokemon.initiate(pokemon.id, { subscribe: false }));
-    });
-  }, [dispatch, pokemonList]);
-
-  const { favoriteIds, favoritesOnly } = useFavorites();
-  const { currentData: pokemonByIds, isLoading: isFavoritesLoading, isError: isFavoritesError } =
-    useGetPokemonDetailsByIdsQuery(favoriteIds, { skip: !favoritesOnly || favoriteIds.length === 0 });
   const favoritePokemon = pokemonByIds?.pokemon;
   const failedFavoriteIds = pokemonByIds?.failedIds.length ?? 0;
-  const selectedTypes = useSelector((state: RootState) => state.pokemon.selectedTypes);
   const sourcePokemon = useMemo(
     () => favoritesOnly
       ? favoritePokemon ?? []
@@ -66,6 +82,28 @@ export const PokemonList: React.FC = () => {
         ),
     [sourcePokemon, selectedTypes],
   );
+  let emptyMessage = 'No Pokémon match the selected types.';
+  if (favoritesOnly) {
+    emptyMessage = favoriteIds.length === 0
+      ? 'No favorites yet. Select a heart to save a Pokémon.'
+      : 'No favorites match the selected types.';
+  }
+  const showEmptyMessage = visiblePokemon.length === 0 &&
+    !isFetchingNextPage && !isLoadingMatchingTypes && !hasDetailError;
+
+  useEffect(() => {
+    pokemonList.forEach((pokemon) => {
+      void dispatch(pokemonApiSlice.endpoints.getPokemon.initiate(pokemon.id, { subscribe: false }));
+    });
+  }, [dispatch, pokemonList]);
+
+  const handleSelectPokemon = useCallback((pokemon: PokemonListItem) => {
+    dispatch(selectPokemon(pokemon));
+  }, [dispatch]);
+  const handleLoadMore = useCallback(() => {
+    void fetchNextPage();
+  }, [fetchNextPage]);
+
   if (favoritesOnly ? isFavoritesLoading : isListLoading) {
     return (
       <div className={styles.loadingContainer} aria-live="polite" role="status">
@@ -86,32 +124,23 @@ export const PokemonList: React.FC = () => {
         {visiblePokemon.length} Pokémon shown{favoritesOnly ? ' in favorites' : ''}.
       </p>
       <div className={styles.gridContainer}>
-        {visiblePokemon.map((pokemon: PokemonListItem, index) => (
-          <article key={pokemon.id} className={styles.cardWrapper}>
-            <PokemonCard
-              pokemonId={pokemon.id}
-              name={pokemon.name}
-              number={pokemon.number}
-              types={pokemon.types}
-              imageSrc={pokemon.imageSrc}
-              prioritizeImage={index === 0}
-              onSelect={() => handleSelectPokemon(pokemon)}
-            />
-          </article>
+        {visiblePokemon.map((pokemon, index) => (
+          <PokemonListCard
+            key={pokemon.id}
+            pokemon={pokemon}
+            prioritizeImage={index === 0}
+            onSelect={handleSelectPokemon}
+          />
         ))}
       </div>
       {visiblePokemon.length === 0 && isLoadingMatchingTypes && (
         <p role="status">Loading matching Pokémon...</p>
       )}
-      {visiblePokemon.length === 0 && !isFetchingNextPage && !isLoadingMatchingTypes && !hasDetailError && (
-        <p>{favoritesOnly && favoriteIds.length === 0
-          ? 'No favorites yet. Select a heart to save a Pokémon.'
-          : favoritesOnly ? 'No favorites match the selected types.' : 'No Pokémon match the selected types.'}</p>
-      )}
+      {showEmptyMessage && <p>{emptyMessage}</p>}
       {!favoritesOnly && hasNextPage && (
         <div className={styles.loadMoreContainer}>
           <ContainedButton
-            onClick={() => void fetchNextPage()}
+            onClick={handleLoadMore}
             disabled={isFetchingNextPage}
           >
             {isFetchingNextPage ? 'Loading Pokémon...' : 'Load More Pokémon'}

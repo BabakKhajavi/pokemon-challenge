@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Dropdown } from '../../../components';
+import { Dropdown } from '../../../components/Dropdown/Dropdown';
 import { TYPE_COLORS } from '../types';
 import { loadPokemonPreferences, savePokemonPreferences } from '../utils/pokemonPreferencesStorage';
 import styles from './Header.module.css';
@@ -28,7 +28,7 @@ export const Header = () => {
   }, [currentTheme]);
 
   return (
-    <header className={styles.headerContainer} role="banner">
+    <header className={styles.headerContainer}>
       <h1 className={styles.title}>Pocket Pokédex</h1>
       <div className={styles.controlsContainer}>
         <Dropdown

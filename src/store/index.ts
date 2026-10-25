@@ -1,29 +1,18 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { createRootReducer, apiMiddlewares } from "./root-reducer";
-
-import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import type { PokemonState } from "../features/pokemon/types";
-import type { pokemonApiSlice } from '../features/pokemon/api/pokemonApiSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import { pokemonApiSlice } from '../features/pokemon/api/pokemonApiSlice';
 import { savePokemonPreferences } from '../features/pokemon/utils/pokemonPreferencesStorage';
+import { rootReducer } from './rootReducer';
 
-const baseStore = configureStore({
-  reducer: createRootReducer(),
+export const store = configureStore({
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false, // Often needed for MFE cross-boundary data
-    }).concat(apiMiddlewares as Middleware[]),
+    getDefaultMiddleware().concat(pokemonApiSlice.middleware),
 });
 
-const asyncReducers: Record<string, Reducer> = {};
-
-export const store = Object.assign(baseStore, {
-  asyncReducers,
-});
-
-let previousFavoriteIds = (store.getState().pokemon as PokemonState).favoriteIds;
-let previousSelectedTypes = (store.getState().pokemon as PokemonState).selectedTypes;
+let previousFavoriteIds = store.getState().pokemon.favoriteIds;
+let previousSelectedTypes = store.getState().pokemon.selectedTypes;
 store.subscribe(() => {
-  const { favoriteIds, selectedTypes } = store.getState().pokemon as PokemonState;
+  const { favoriteIds, selectedTypes } = store.getState().pokemon;
   if (favoriteIds !== previousFavoriteIds || selectedTypes !== previousSelectedTypes) {
     previousFavoriteIds = favoriteIds;
     previousSelectedTypes = selectedTypes;
@@ -31,8 +20,5 @@ store.subscribe(() => {
   }
 });
 
-export type RootState = ReturnType<typeof store.getState> & {
-  pokemon: PokemonState;
-  pokemonApi: ReturnType<typeof pokemonApiSlice.reducer>;
-};
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

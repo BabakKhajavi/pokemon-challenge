@@ -60,8 +60,9 @@ export const PokemonAbout = ({ pokemon, species }: PokemonAboutProps) => {
         <img src={evolutionIcon} alt="" />
         <div>
           <h3>Evolution Chain</h3>
-          {isLoading && <p>Loading evolution chain...</p>}
-          {isError && <p>Evolution chain unavailable.</p>}
+          {isLoading && <p role="status">Loading evolution chain...</p>}
+          {isError && <p role="alert">Evolution chain unavailable.</p>}
+          {!isLoading && !isError && evolution.length === 0 && <p>Evolution chain unavailable.</p>}
           {!isLoading && !isError && evolution.length > 0 && (
             <div className={styles.evolution}>
               {evolution.map((stage, index) => (

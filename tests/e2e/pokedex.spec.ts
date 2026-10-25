@@ -87,6 +87,39 @@ test('filters by every selected type and loads the next page', async ({ page }) 
   await expect(page.getByText('No Pokémon match the selected types.')).toBeVisible();
 });
 
+test('loads exactly 40 Pokémon per page', async ({ page }) => {
+  const requestedOffsets: number[] = [];
+  const requestedLimits: number[] = [];
+  await page.route(/\/api\/v2\/pokemon\?/, (route) => {
+    const url = new URL(route.request().url());
+    const offset = Number(url.searchParams.get('offset'));
+    requestedOffsets.push(offset);
+    requestedLimits.push(Number(url.searchParams.get('limit')));
+    const results = Array.from({ length: 40 }, (_, index) => {
+      const id = offset + index + 1;
+      return { name: `test-pokemon-${id}`, url: `https://pokeapi.co/api/v2/pokemon/${id}/` };
+    });
+    return route.fulfill({ json: {
+      count: 80,
+      next: offset === 0 ? 'https://pokeapi.co/api/v2/pokemon?limit=40&offset=40' : null,
+      previous: null,
+      results,
+    } });
+  });
+  await page.route(/\/api\/v2\/pokemon\/\d+\/?$/, (route) => {
+    const id = Number(new URL(route.request().url()).pathname.match(/\/(\d+)\/?$/)?.[1]);
+    return route.fulfill({ json: { ...responseFor(1), id, name: `test-pokemon-${id}` } });
+  });
+
+  await page.goto('/');
+  const cards = page.getByRole('button', { name: /^View details for test-pokemon-\d+$/ });
+  await expect(cards).toHaveCount(40);
+  await page.getByRole('button', { name: 'Load More Pokémon' }).click();
+  await expect(cards).toHaveCount(80);
+  expect(requestedOffsets).toEqual([0, 40]);
+  expect(requestedLimits).toEqual([40, 40]);
+});
+
 test('favorites do not open the modal and survive reload', async ({ page }) => {
   await page.goto('/');
   const favorite = page.getByRole('button', { name: 'Favorite bulbasaur' });
@@ -160,6 +193,34 @@ test('modal tabs work and reopening uses the cached detail', async ({ page }) =>
   expect(bulbasaurRequests).toBe(beforeReopen);
 });
 
+test('loads modal code only after a card is selected', async ({ page }) => {
+  const modalScriptRequests: string[] = [];
+  page.on('request', (request) => {
+    if (/\/assets\/js\/PokemonDetailModal-[^/]+\.js$/.test(new URL(request.url()).pathname)) {
+      modalScriptRequests.push(request.url());
+    }
+  });
+
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'View details for bulbasaur' })).toBeVisible();
+  expect(modalScriptRequests).toHaveLength(0);
+
+  await page.getByRole('button', { name: 'View details for bulbasaur' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  expect(modalScriptRequests).toHaveLength(1);
+});
+
+test('closes the modal when clicking outside it', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'View details for bulbasaur' }).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  const bounds = await dialog.boundingBox();
+  expect(bounds).not.toBeNull();
+  await page.mouse.click(bounds!.x - 8, bounds!.y + bounds!.height / 2);
+  await expect(dialog).toHaveCount(0);
+});
+
 test('theme choice and color mode survive reload', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Select theme: Default Theme' }).click();
@@ -181,5 +242,16 @@ test.describe('mobile artwork', () => {
     await expect(image).toBeVisible();
     await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.currentSrc))
       .toContain('/pokemon-artwork/v1/card-256/1.webp');
+  });
+
+  test('discloses type filters and keeps the selected count', async ({ page }) => {
+    await page.goto('/');
+    const showTypes = page.getByRole('button', { name: 'Show types' });
+    await expect(showTypes).toHaveAttribute('aria-expanded', 'false');
+    await showTypes.click();
+    await expect(page.getByRole('button', { name: 'grass', exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'grass', exact: true }).click();
+    await page.getByRole('button', { name: 'Hide types' }).click();
+    await expect(page.getByRole('button', { name: 'Show types (1 selected)' })).toHaveAttribute('aria-expanded', 'false');
   });
 });

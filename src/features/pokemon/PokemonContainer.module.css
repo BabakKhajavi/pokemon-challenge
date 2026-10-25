@@ -18,24 +18,6 @@
   margin-top: 24px;
 }
 
-.filterHeadingRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 16px 0 8px;
-}
-
-.filterTitle {
-  margin: 0;
-  color: var(--text);
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-}
-
-.mobileFilterToggle { display: none; }
-
 .listSection {
   margin-top: 8px;
 }
@@ -53,43 +35,7 @@
     margin-top: 16px;
   }
 
-  .mobileFilterToggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 32px;
-    padding: 4px 8px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--surface);
-    color: var(--text);
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  .mobileFilterToggle:focus-visible {
-    outline: 3px solid var(--focus-ring);
-    outline-offset: 2px;
-  }
-
-  .disclosureIcon {
-    width: 7px;
-    height: 7px;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: rotate(45deg);
-  }
-
-  .mobileFilterToggle[aria-expanded='true'] .disclosureIcon {
-    transform: rotate(225deg);
-  }
-
-  .filterPills { display: none; }
-  .filterPillsOpen { display: block; }
-
-  .stickyControls:has(.mobileFilterToggle[aria-expanded='true']) {
+  .stickyControls:has([data-type-filter-open='true']) {
     max-height: 70dvh;
     overflow-y: auto;
   }

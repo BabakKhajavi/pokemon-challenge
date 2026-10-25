@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { baseQuery } from '../../../services/api/baseApi';
+import { baseQuery } from '../../../services/api/baseQuery';
 import { formatPokemonNumber } from '../../../utils/formatPokemonNumber';
 import { getPokemonArtwork } from '../utils/getPokemonArtwork';
 import {

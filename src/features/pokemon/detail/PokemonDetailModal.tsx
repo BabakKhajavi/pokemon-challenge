@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type MouseEvent, type SyntheticEvent } from 'react';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useDispatch, useSelector } from 'react-redux';
-import { Tabs, type TabItem } from '../../../components';
+import { Tabs, type TabItem } from '../../../components/Tabs/Tabs';
 import type { AppDispatch, RootState } from '../../../store';
 import { useGetPokemonQuery, useGetPokemonSpeciesQuery } from '../api/pokemonApiSlice';
 import { closePokemonModal } from '../pokemonSlice';
@@ -30,6 +30,7 @@ const PokemonDetailDialog = ({ selectedPokemon }: { selectedPokemon: PokemonList
   const [activeTab, setActiveTab] = useState('stats');
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   const { data: pokemon, isLoading, isError } = useGetPokemonQuery(selectedPokemon.id);
   const { data: species, isLoading: isSpeciesLoading, isError: isSpeciesError } =
     useGetPokemonSpeciesQuery(pokemon ? pokemon.speciesId : skipToken);
@@ -55,18 +56,22 @@ const PokemonDetailDialog = ({ selectedPokemon }: { selectedPokemon: PokemonList
     };
   }, []);
 
+  const handleClose = () => dispatch(closePokemonModal());
+  const handleCancel = (event: SyntheticEvent<HTMLDialogElement>) => {
+    event.preventDefault();
+    handleClose();
+  };
+  const handleBackdropClick = (event: MouseEvent<HTMLDialogElement>) => {
+    if (event.target === event.currentTarget) handleClose();
+  };
+
   return (
     <dialog
       ref={dialogRef}
       className={styles.dialog}
       aria-labelledby="pokemon-detail-title"
-      onCancel={(event) => {
-        event.preventDefault();
-        dispatch(closePokemonModal());
-      }}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) dispatch(closePokemonModal());
-      }}
+      onCancel={handleCancel}
+      onClick={handleBackdropClick}
     >
       <div className={styles.content}>
         <header className={styles.header}>
@@ -76,7 +81,7 @@ const PokemonDetailDialog = ({ selectedPokemon }: { selectedPokemon: PokemonList
             type="button"
             className={styles.closeButton}
             aria-label="Close Pokémon details"
-            onClick={() => dispatch(closePokemonModal())}
+            onClick={handleClose}
           >
             ×
           </button>
