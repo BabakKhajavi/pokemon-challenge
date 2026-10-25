@@ -1,0 +1,18 @@
+.button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #e11d48;
+  cursor: pointer;
+}
+
+.button:hover { background: var(--hover); }
+.button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 1px; }
+.button svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.outline { fill: none; }
+.filled { fill: currentColor; }

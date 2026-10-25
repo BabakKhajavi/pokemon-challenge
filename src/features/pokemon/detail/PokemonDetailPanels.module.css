@@ -1,0 +1,173 @@
+.stats {
+  display: grid;
+  gap: 17px;
+}
+
+.statHeading,
+.total {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 19px;
+}
+
+.statTrack {
+  height: 7px;
+  margin-top: 4px;
+  overflow: hidden;
+  background: var(--hover);
+  border-radius: 1px;
+}
+
+.statFill {
+  height: 100%;
+  background: var(--text);
+}
+
+.total {
+  margin-top: 7px;
+}
+
+.sectionTitle,
+.aboutSection h3 {
+  margin: 0 0 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.moves {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.moves li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.moveName {
+  color: var(--text);
+  text-transform: capitalize;
+}
+
+.moveLevel {
+  flex: none;
+  color: var(--muted);
+}
+
+.about {
+  display: grid;
+  gap: 26px;
+}
+
+.aboutSection {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.aboutSection > img,
+.sectionSymbol {
+  width: 20px;
+  height: 20px;
+}
+
+.sectionSymbol {
+  color: var(--accent);
+  font-size: 23px;
+  line-height: 20px;
+}
+
+.aboutSection p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 21px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+  margin: 14px 0 0;
+  font-size: 12px;
+}
+
+.infoGrid dt {
+  color: var(--muted);
+}
+
+.infoGrid dd {
+  margin: 3px 0 0;
+  color: var(--text);
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.evolution {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.evolutionStep {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.evolutionArrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 6px;
+  color: var(--muted);
+  font-size: 20px;
+}
+
+.evolutionArrow small {
+  font-size: 10px;
+}
+
+.evolutionPokemon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 84px;
+  color: var(--text);
+  font-size: 11px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.evolutionPokemon img {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+}
+
+.classification {
+  display: inline-block;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.inlineIcon {
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  vertical-align: -2px;
+}

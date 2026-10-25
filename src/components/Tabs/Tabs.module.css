@@ -1,0 +1,39 @@
+.tabs {
+  min-width: 0;
+}
+
+.tabList {
+  display: flex;
+  padding: 4px;
+  background: var(--hover);
+  border-radius: 5px;
+}
+
+.tab {
+  flex: 1;
+  min-height: 32px;
+  padding: 5px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.tab[aria-selected='true'] {
+  background: var(--surface);
+  box-shadow: inset 0 -3px 0 var(--selection-indicator), 0 1px 2px rgba(15, 23, 42, 0.08);
+  color: var(--text);
+}
+
+.tab:focus-visible,
+.panel:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.panel {
+  padding-top: 24px;
+}

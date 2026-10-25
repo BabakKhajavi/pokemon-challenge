@@ -1,0 +1,55 @@
+name: Build and test
+
+on:
+  push:
+    branches:
+      - sandbox
+      - production
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Build sandbox
+        if: github.ref_name == 'sandbox'
+        run: npm run build:sandbox
+
+      - name: Build production
+        if: github.ref_name == 'production'
+        run: npm run build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-report-${{ github.ref_name }}
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7

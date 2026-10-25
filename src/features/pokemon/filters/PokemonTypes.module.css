@@ -1,0 +1,42 @@
+.filterTags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.typeBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 26px;
+  padding: 3px 12px;
+  border: 1px solid;
+  border-radius: 9999px;
+  background: var(--surface);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.typeBadge:hover {
+  background: var(--hover);
+}
+
+.typeBadge:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.typeBadge.fillTrue:hover {
+  filter: brightness(0.95);
+}
+
+.tagText {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  text-transform: capitalize;
+}
+

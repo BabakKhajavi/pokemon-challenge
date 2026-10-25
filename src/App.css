@@ -1,0 +1,292 @@
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/inter-latin-variable.woff2') format('woff2');
+}
+
+:root {
+  --accent: #2563eb;
+  --focus-ring: #1d4ed8;
+  --selection-indicator: color-mix(in srgb, var(--accent) 65%, var(--text));
+  --icon-filter: none;
+  --icon-hover-filter: brightness(0) saturate(100%) invert(9%) sepia(17%) saturate(1574%) hue-rotate(174deg) brightness(95%) contrast(95%);
+  --accent-text: #f9fafb;
+  --page-bg: #fff;
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --hover: #f8fafc;
+  --scroll-thumb: color-mix(in srgb, var(--accent) 55%, var(--muted));
+}
+
+html { scroll-padding-top: min(320px, 55vh); }
+
+@media (max-height: 560px) {
+  html { scroll-padding-top: 0; }
+}
+
+:root[data-pokemon-theme='normal'] {
+  --accent: #a8a878;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='fire'] {
+  --accent: #f08030;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='water'] {
+  --accent: #6890f0;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='electric'] {
+  --accent: #f8d030;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='grass'] {
+  --accent: #78c850;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='ice'] {
+  --accent: #98d8d8;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='fighting'] {
+  --accent: #c03028;
+  --accent-text: #f9fafb;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='poison'] {
+  --accent: #a040a0;
+  --accent-text: #f9fafb;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='ground'] {
+  --accent: #e0c068;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='flying'] {
+  --accent: #a890f0;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='psychic'] {
+  --accent: #f85888;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='bug'] {
+  --accent: #a8b820;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='rock'] {
+  --accent: #b8a038;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='ghost'] {
+  --accent: #705898;
+  --accent-text: #f9fafb;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='dragon'] {
+  --accent: #7038f8;
+  --accent-text: #f9fafb;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='dark'] {
+  --accent: #705848;
+  --accent-text: #f9fafb;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='steel'] {
+  --accent: #b8b8d0;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-pokemon-theme='fairy'] {
+  --accent: #ee99ac;
+  --accent-text: #020817;
+  --page-bg: color-mix(in srgb, var(--accent) 5%, #fff);
+  --surface: #fff;
+  --text: #020817;
+  --muted: #64748b;
+  --border: color-mix(in srgb, var(--accent) 18%, #e2e8f0);
+  --hover: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --focus-ring: #93c5fd;
+  --icon-filter: brightness(0) invert(1);
+  --icon-hover-filter: brightness(0) invert(1);
+  --page-bg: #0f172a;
+  --surface: #1e293b;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --border: #475569;
+  --hover: #334155;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+body {
+  margin: 0;
+  min-width: 320px;
+  display: flex;
+  justify-content: center;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+}
+
+#root,
+.app {
+  width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}

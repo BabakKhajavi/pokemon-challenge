@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="%BASE_URL%pokemon-artwork/v1/1.webp"
+      as="image"
+      type="image/webp"
+      fetchpriority="high"
+      imagesrcset="%BASE_URL%pokemon-artwork/v1/card-160/1.webp 160w, %BASE_URL%pokemon-artwork/v1/card-256/1.webp 256w, %BASE_URL%pokemon-artwork/v1/1.webp 360w"
+      imagesizes="(max-width: 420px) 83px, (max-width: 700px) 100px, 144px"
+    />
+    <link
+      rel="preload"
+      href="/fonts/inter-latin-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Battle two randomly selected Pokémon, compare their moves, and discover the winner in Pokémon Battle."
+    />
+    <title>Pokemon library</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

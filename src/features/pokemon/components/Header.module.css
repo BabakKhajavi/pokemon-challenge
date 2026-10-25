@@ -1,0 +1,88 @@
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 40px;
+}
+
+.title {
+  margin: 0;
+  color: var(--text);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 36px;
+}
+
+.controlsContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.themeIcon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: url('/assets/theme-brush-blue-16.png') center / contain no-repeat;
+  filter: var(--icon-filter);
+}
+
+.controlsContainer button:hover .themeIcon {
+  background-image: url('/assets/theme-brush-gray-16.png');
+}
+
+.themeToggleButton {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.themeToggleButton:hover {
+  background: var(--hover);
+}
+
+.themeToggleButton:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.toggleVector {
+  width: 16px;
+  height: 16px;
+  background: url('/assets/sun-blue-16.png') center / contain no-repeat;
+  filter: var(--icon-filter);
+}
+
+.themeToggleButton:hover .toggleVector {
+  background-image: url('/assets/sun-gray-16.png');
+}
+
+@media (max-width: 600px) {
+  .headerContainer {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .title {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .controlsContainer {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .controlsContainer > :first-child {
+    flex: 1;
+    min-width: 0;
+  }
+}
