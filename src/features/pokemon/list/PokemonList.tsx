@@ -3,7 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { ContainedButton } from '../../../components';
 import { PokemonCard } from './PokemonCard';
 import styles from './PokemonList.module.css';
-import { pokemonApiSlice, useGetFavoritePokemonQuery, useGetPokemonListInfiniteQuery } from '../api/pokemonApiSlice';
+import { pokemonApiSlice, useGetPokemonDetailsByIdsQuery, useGetPokemonListInfiniteQuery } from '../api/pokemonApiSlice';
 import { useFavorites } from '../hooks/useFavorites';
 import { selectPokemon } from '../pokemonSlice';
 import type { PokemonListItem } from '../types';
@@ -42,12 +42,14 @@ export const PokemonList: React.FC = () => {
   }, [dispatch, pokemonList]);
 
   const { favoriteIds, favoritesOnly } = useFavorites();
-  const { currentData: favoritePokemon = [], isLoading: isFavoritesLoading, isError: isFavoritesError } =
-    useGetFavoritePokemonQuery(favoriteIds, { skip: !favoritesOnly || favoriteIds.length === 0 });
+  const { currentData: pokemonByIds, isLoading: isFavoritesLoading, isError: isFavoritesError } =
+    useGetPokemonDetailsByIdsQuery(favoriteIds, { skip: !favoritesOnly || favoriteIds.length === 0 });
+  const favoritePokemon = pokemonByIds?.pokemon;
+  const failedFavoriteIds = pokemonByIds?.failedIds.length ?? 0;
   const selectedTypes = useSelector((state: RootState) => state.pokemon.selectedTypes);
   const sourcePokemon = useMemo(
     () => favoritesOnly
-      ? favoritePokemon
+      ? favoritePokemon ?? []
       : pokemonList.map((pokemon, index) => detailQueries[index]?.data ?? pokemon),
     [favoritesOnly, favoritePokemon, pokemonList, detailQueries],
   );
@@ -120,6 +122,9 @@ export const PokemonList: React.FC = () => {
         <p role="alert">Could not load the next page. Please try again.</p>
       )}
       {hasDetailError && <p role="alert">Some Pokémon details could not load.</p>}
+      {favoritesOnly && failedFavoriteIds > 0 && (
+        <p role="alert">Could not load {failedFavoriteIds} saved Pokémon. Other favorites are shown.</p>
+      )}
     </section>
   );
 };

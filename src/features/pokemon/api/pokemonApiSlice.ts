@@ -8,6 +8,7 @@ import {
   type EvolutionChainResponse,
   type EvolutionNode,
   type PokemonDetail,
+  type PokemonDetailsByIds,
   type PokemonEvolutionStage,
   type PokemonListResponse,
   type PokemonPage,
@@ -107,16 +108,24 @@ const basePokemonApi = createApi({
 
 export const pokemonApiSlice = basePokemonApi.injectEndpoints({
   endpoints: (builder) => ({
-    getFavoritePokemon: builder.query<PokemonDetail[], number[]>({
+    getPokemonDetailsByIds: builder.query<PokemonDetailsByIds, number[]>({
       async queryFn(ids, api) {
-        try {
-          const data = await Promise.all(ids.map((id) =>
-            api.dispatch(basePokemonApi.endpoints.getPokemon.initiate(id, { subscribe: false })).unwrap(),
-          ));
-          return { data };
-        } catch {
-          return { error: { status: 'CUSTOM_ERROR', error: 'Could not load favorite Pokémon' } };
+        const results = await Promise.allSettled(ids.map((id) =>
+          api.dispatch(basePokemonApi.endpoints.getPokemon.initiate(id, { subscribe: false })).unwrap(),
+        ));
+        const pokemon: PokemonDetail[] = [];
+        const failedIds: number[] = [];
+
+        results.forEach((result, index) => {
+          if (result.status === 'fulfilled') pokemon.push(result.value);
+          else failedIds.push(ids[index]);
+        });
+
+        if (failedIds.length > 0 && pokemon.length === 0) {
+          return { error: { status: 'CUSTOM_ERROR', error: 'Could not load Pokémon details' } };
         }
+
+        return { data: { pokemon, failedIds } };
       },
       keepUnusedDataFor: 3600,
     }),
@@ -149,7 +158,7 @@ export const pokemonApiSlice = basePokemonApi.injectEndpoints({
 });
 
 export const {
-  useGetFavoritePokemonQuery,
+  useGetPokemonDetailsByIdsQuery,
   useGetPokemonListInfiniteQuery,
   useGetPokemonQuery,
   useGetPokemonSpeciesQuery,

@@ -36,6 +36,11 @@ export interface PokemonDetail extends PokemonListItem {
   moves: { name: string; level: number }[];
 }
 
+export interface PokemonDetailsByIds {
+  pokemon: PokemonDetail[];
+  failedIds: number[];
+}
+
 export interface PokemonSpecies {
   name: string;
   description: string;

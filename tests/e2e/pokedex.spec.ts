@@ -100,6 +100,21 @@ test('favorites do not open the modal and survive reload', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'View details for ivysaur' })).toHaveCount(0);
 });
 
+test('shows loaded saved Pokémon when another detail request fails', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem('pokemon.preferences.v1', JSON.stringify({ favoriteIds: [1, 2] }));
+  });
+  await page.route(/\/api\/v2\/pokemon\/2\/?$/, (route) =>
+    route.fulfill({ status: 503, json: { detail: 'Unavailable' } }),
+  );
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Favorites', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'View details for bulbasaur' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'View details for ivysaur' })).toHaveCount(0);
+  await expect(page.getByRole('alert').filter({ hasText: 'Could not load 1 saved Pokémon.' })).toBeVisible();
+});
+
 test('modal tabs work and reopening uses the cached detail', async ({ page }) => {
   let bulbasaurRequests = 0;
   page.on('request', (request) => {
