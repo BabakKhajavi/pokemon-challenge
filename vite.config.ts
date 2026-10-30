@@ -26,13 +26,22 @@ export default defineConfig(({ command, mode }) => {
       },
       ...(isBuild && isProduction ? [viteCompression({ verbose: false })] : []),
       ...(isBuild && env.ANALYZE === 'true'
-        ? [visualizer({
-            open: false,
-            emitFile: true,
-            filename: 'bundle-report.html',
-            template: 'treemap',
-            gzipSize: true,
-          }) as PluginOption]
+        ? [
+            visualizer({
+              open: false,
+              emitFile: true,
+              filename: 'bundle-report.html',
+              template: 'treemap',
+              gzipSize: true,
+            }) as PluginOption,
+            visualizer({
+              open: false,
+              emitFile: true,
+              filename: 'bundle-report-list.html',
+              template: 'list',
+              gzipSize: true,
+            }) as PluginOption,
+          ]
         : []),
     ],
     resolve: {
