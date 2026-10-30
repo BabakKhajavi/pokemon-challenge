@@ -7,7 +7,7 @@ import viteCompression from 'vite-plugin-compression';
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const isBuild = command === 'build';
-  const isSandbox = mode === 'sandbox';
+  const isProduction = mode === 'production';
 
   return {
     base: env.APP_BASE_PATH || '/',
@@ -24,7 +24,7 @@ export default defineConfig(({ command, mode }) => {
           });
         },
       },
-      ...(isBuild && !isSandbox ? [viteCompression({ verbose: false })] : []),
+      ...(isBuild && isProduction ? [viteCompression({ verbose: false })] : []),
       ...(isBuild && env.ANALYZE === 'true'
         ? [visualizer({
             open: false,
@@ -48,8 +48,9 @@ export default defineConfig(({ command, mode }) => {
       port: 9002,
     },
     build: {
-      sourcemap: isSandbox ? true : mode === 'stage' ? 'hidden' : false,
-      minify: isSandbox ? false : 'oxc',
+      sourcemap: isProduction ? false : mode === 'stage' ? 'hidden' : true,
+      minify: isProduction ? 'oxc' : false,
+      cssMinify: isProduction,
       cssCodeSplit: true,
       rolldownOptions: {
         output: {
