@@ -44,8 +44,8 @@ export default defineConfig(({ command, mode }) => {
             visualizer({
               open: true,
               emitFile: true,
-              filename: "bundle-report-list.html",
-              template: "list",
+              filename: "bundle-report-sunburst.html",
+              template: "sunburst",
               gzipSize: true,
             }) as PluginOption,
           ]
